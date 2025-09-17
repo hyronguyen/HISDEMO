@@ -176,6 +176,9 @@
                             <span class="badge ${cp.daPhat ? 'bg-success' : 'bg-secondary'}">${cp.daPhat ? 'Đã phát' : 'Chưa phát'}</span>
                         </div>
                         <div class="mt-2">${cp.ten}</div>
+                        <div class="text-muted small">
+                            Số phiếu gốc: ${currentPhieu.soPhieuGoc ? currentPhieu.soPhieuGoc : currentPhieu.soPhieu}
+                        </div>
                     </div>
                 `;
             });
@@ -232,9 +235,18 @@
                 return;
             }
 
-            // Tách các chế phẩm đã chọn thành 1 phiếu mới
+            // Lấy số phiếu gốc (ví dụ: từ 999.1 hoặc 999.2 sẽ lấy 999)
+            let soPhieuGoc = currentPhieu.soPhieuGoc || currentPhieu.soPhieu.split('.')[0];
+
+            // Tìm số phiếu mới dạng gốc.số, số tăng dần và chưa tồn tại
             let suffix = 1;
-            const newSoPhieu = currentPhieu.soPhieu + '.' + suffix;
+            let newSoPhieu;
+            while (true) {
+                newSoPhieu = soPhieuGoc + '.' + suffix;
+                if (!bloodPhieuList.some(p => p.soPhieu === newSoPhieu)) break;
+                suffix++;
+            }
+
             const chePhamsTach = checked.map(idx => currentPhieu.chePhams[idx]);
             bloodPhieuList.push({
                 stt: bloodPhieuList.length + 1,
@@ -245,7 +257,8 @@
                 maBA: currentPhieu.maBA,
                 maNB: currentPhieu.maNB,
                 chePhams: chePhamsTach,
-                mucDo: currentPhieu.mucDo
+                mucDo: currentPhieu.mucDo,
+                soPhieuGoc: soPhieuGoc
             });
 
             // Xóa các chế phẩm đã tách khỏi phiếu gốc
