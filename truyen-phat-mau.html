@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Viện Huyết học - TMTW | Truyền phát máu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body { height: 100vh; overflow: hidden; background: #f7f7f7; }
+        .header-bar { background: #f36c6c; color: #fff; padding: 10px 0; }
+        .sidebar { background: #eaf3fa; min-height: 100vh; }
+        .card { margin-bottom: 1rem; }
+        .section-title { font-weight: bold; font-size: 1.1rem; }
+        .blood-chip { background: #eaf3fa; border-radius: 8px; padding: 10px; margin-bottom: 10px; }
+        .btn-action { margin-right: 5px; }
+        .chatbot { position: fixed; right: 30px; bottom: 30px; z-index: 999; }
+        .main-content-limited { height: calc(100vh - 110px); overflow: hidden; }
+        .card-body { overflow: auto; max-height: calc(100vh - 180px); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-bar d-flex align-items-center justify-content-between px-4">
+        <div>
+            <span class="fw-bold">Sakura</span>
+            <span class="badge bg-success ms-2">DEMO</span>
+        </div>
+        <div class="flex-grow-1 mx-4">
+            <input class="form-control" type="text" placeholder="Tìm kiếm tên màn hình">
+        </div>
+        <div>
+            <span class="me-3">Nguyễn Hồ Ngọc Huy</span>
+            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar" width="32" class="rounded-circle">
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav class="px-4 py-2 bg-white border-bottom">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">Trang chủ</li>
+            <li class="breadcrumb-item">Kho máu</li>
+            <li class="breadcrumb-item"><a href="index.html">Truyền phát máu</a></li>
+            <li class="breadcrumb-item active">Chi tiết truyền phát máu</li>
+        </ol>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-3 main-content-limited">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar" width="48" class="rounded-circle bg-secondary">
+                    </div>
+                    <div>
+                        <span class="fw-bold">Mã BA: <span class="text-primary border border-primary px-2 py-1 rounded" id="maBA"></span></span>
+                        <span class="fw-bold ms-3" id="hoTen"></span>
+                        <span id="ngaySinh"></span><br>
+                        <span>- Mã HS: <span id="maHS"></span> - Mã NB: <span id="maNB"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2">
+                <div class="sidebar p-3 rounded">
+                    <div class="mb-3 section-title"><i class="bi bi-droplet"></i> Chế phẩm máu</div>
+                    <div class="mb-3"><i class="bi bi-flask"></i> Xét nghiệm</div>
+                    <div class="mb-3"><i class="bi bi-box"></i> Vật tư</div>
+                    <div class="mb-3"><i class="bi bi-x-circle"></i> Chế phẩm máu đã hủy</div>
+                </div>
+            </div>
+            <!-- Main Form -->
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="section-title">Chế phẩm máu - <span class="text-primary" id="soPhieu"></span></span>
+                            <div>
+                                <button class="btn btn-secondary btn-sm btn-action">Cập nhật nhóm máu NB</button>
+                                <button class="btn btn-warning btn-sm btn-action" id="btnShowTachPhieu">Tách phiếu máu</button>
+                                <button class="btn btn-success btn-sm btn-action" id="btnPhatTatCa">Phát máu</button>
+                                <button class="btn btn-secondary btn-sm btn-action">Đổi kho phát máu</button>
+                            </div>
+                        </div>
+                        <div id="chePhamContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Chatbot Icon -->
+        <div class="chatbot">
+            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712027.png" alt="Chatbot" width="60">
+        </div>
+    </div>
+
+    <!-- Popup chọn chế phẩm máu -->
+    <div class="modal fade" id="modalPhatMau" tabindex="-1" aria-labelledby="modalPhatMauLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalPhatMauLabel">Chọn chế phẩm máu muốn tách số phiếu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body" id="chePhamList">
+            <!-- List chế phẩm máu sẽ render ở đây -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="button" class="btn btn-primary" id="btnPhatMau">Tách phiếu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Lấy thông tin phiếu từ query string
+        const params = new URLSearchParams(window.location.search);
+        const soPhieu = params.get('soPhieu');
+        document.getElementById('soPhieu').textContent = soPhieu || '';
+        document.getElementById('maBA').textContent = params.get('maBA') || '';
+        document.getElementById('hoTen').textContent = params.get('hoTen') || '';
+        document.getElementById('ngaySinh').textContent = params.get('ngaySinh') ? '(' + params.get('ngaySinh') + ')' : '';
+        document.getElementById('maHS').textContent = params.get('maHS') || '';
+        document.getElementById('maNB').textContent = params.get('maNB') || '';
+
+        // Lấy danh sách phiếu từ localStorage
+        let bloodPhieuList = JSON.parse(localStorage.getItem('bloodPhieuList')) || [];
+        let currentPhieu = bloodPhieuList.find(p => p.soPhieu === soPhieu);
+
+        // Nếu không tìm thấy thì tạo mới (trường hợp truy cập trực tiếp)
+        if (!currentPhieu) {
+            currentPhieu = {
+                stt: bloodPhieuList.length + 1,
+                soPhieu: soPhieu,
+                hoTen: params.get('hoTen') || '',
+                ngaySinh: params.get('ngaySinh') || '',
+                maHS: params.get('maHS') || '',
+                maBA: params.get('maBA') || '',
+                maNB: params.get('maNB') || '',
+                chePhams: [
+                    { id: 'M02', ten: 'Huyết tương tươi đông lạnh 200 ml', daPhat: false },
+                    { id: 'HC1', ten: 'Khối hồng cầu từ 250 ml máu toàn phần', daPhat: false }
+                ],
+                mucDo: 'Thường'
+            };
+            bloodPhieuList.push(currentPhieu);
+            localStorage.setItem('bloodPhieuList', JSON.stringify(bloodPhieuList));
+        }
+
+        // Hiển thị danh sách chế phẩm máu
+        function renderChePhams() {
+            const container = document.getElementById('chePhamContainer');
+            container.innerHTML = '';
+            currentPhieu.chePhams.forEach((cp, idx) => {
+                container.innerHTML += `
+                    <div class="blood-chip border mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">${idx + 1}. Chế phẩm máu: ${cp.id}</span>
+                            <span class="badge ${cp.daPhat ? 'bg-success' : 'bg-secondary'}">${cp.daPhat ? 'Đã phát' : 'Chưa phát'}</span>
+                        </div>
+                        <div class="mt-2">${cp.ten}</div>
+                    </div>
+                `;
+            });
+        }
+        renderChePhams();
+
+
+        // Hiển thị popup chọn chế phẩm máu để tách phiếu
+        document.getElementById('btnShowTachPhieu').onclick = function() {
+            const listDiv = document.getElementById('chePhamList');
+            listDiv.innerHTML = '';
+            currentPhieu.chePhams.forEach((cp, idx) => {
+                if (!cp.daPhat) {
+                    listDiv.innerHTML += `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${idx}" id="cp${idx}">
+                            <label class="form-check-label" for="cp${idx}">
+                                ${cp.ten}
+                            </label>
+                        </div>
+                    `;
+                }
+            });
+            const modal = new bootstrap.Modal(document.getElementById('modalPhatMau'));
+            modal.show();
+        };
+
+        // Xử lý phát máu và tách phiếu
+        document.getElementById('btnPhatMau').onclick = function() {
+            const checked = Array.from(document.querySelectorAll('#chePhamList input:checked')).map(i => parseInt(i.value));
+            const total = currentPhieu.chePhams.filter(cp => !cp.daPhat).length;
+
+            // Không cho tách nếu chỉ còn 1 chế phẩm máu
+            if (total <= 1) {
+                alert('Phiếu chỉ còn 1 chế phẩm máu, không thể tách!');
+                return;
+            }
+            // Không cho tách nếu chọn hết hoặc không chọn
+            if (checked.length === 0) {
+                alert('Vui lòng chọn ít nhất 1 chế phẩm máu để tách!');
+                return;
+            }
+            if (checked.length >= total) {
+                alert('Không thể tách toàn bộ chế phẩm máu, phải chừa lại ít nhất 1!');
+                return;
+            }
+
+            // Tách các chế phẩm đã chọn thành 1 phiếu mới
+            let suffix = 1;
+            const newSoPhieu = currentPhieu.soPhieu + '.' + suffix;
+            const chePhamsTach = checked.map(idx => currentPhieu.chePhams[idx]);
+            bloodPhieuList.push({
+                stt: bloodPhieuList.length + 1,
+                soPhieu: newSoPhieu,
+                hoTen: currentPhieu.hoTen,
+                ngaySinh: currentPhieu.ngaySinh,
+                maHS: currentPhieu.maHS,
+                maBA: currentPhieu.maBA,
+                maNB: currentPhieu.maNB,
+                chePhams: chePhamsTach,
+                mucDo: currentPhieu.mucDo
+            });
+
+            // Xóa các chế phẩm đã tách khỏi phiếu gốc
+            currentPhieu.chePhams = currentPhieu.chePhams.filter((cp, idx) => !checked.includes(idx));
+            localStorage.setItem('bloodPhieuList', JSON.stringify(bloodPhieuList));
+            renderChePhams();
+            bootstrap.Modal.getInstance(document.getElementById('modalPhatMau')).hide();
+
+            // Thông báo và xác nhận quay về danh sách
+            const msg = `Đã tách thành công! Các chế phẩm máu đã được chuyển sang số phiếu: ${newSoPhieu}.\n\nBạn có muốn quay về danh sách phiếu không?`;
+            if (confirm(msg)) {
+                window.location.href = "index.html";
+            }
+        };
+
+        // Phát tất cả chế phẩm máu
+        document.getElementById('btnPhatTatCa').onclick = function() {
+            currentPhieu.chePhams.forEach(cp => cp.daPhat = true);
+            localStorage.setItem('bloodPhieuList', JSON.stringify(bloodPhieuList));
+            renderChePhams();
+            alert('Đã phát tất cả chế phẩm máu!');
+        };
+    </script>
+</body>
+</html>

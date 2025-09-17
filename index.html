@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách truyền phát máu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+            background: #f7f7f7;
+        }
+        .header-bar { background: #f36c6c; color: #fff; padding: 10px 0; }
+        .table-responsive {
+            max-height: calc(100vh - 170px);
+            overflow: auto;
+        }
+        .chatbot { position: fixed; right: 30px; bottom: 30px; z-index: 999; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-bar d-flex align-items-center justify-content-between px-4">
+        <div>
+            <span class="fw-bold">Sakura</span>
+            <span class="badge bg-success ms-2">DEMO</span>
+        </div>
+        <div class="flex-grow-1 mx-4">
+            <input class="form-control" type="text" placeholder="Tìm kiếm tên màn hình">
+        </div>
+        <div>
+            <span class="me-3">Nguyễn Hồ Ngọc Huy</span>
+            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar" width="32" class="rounded-circle">
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav class="px-4 py-2 bg-white border-bottom">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="#">Kho máu</a></li>
+            <li class="breadcrumb-item active">Truyền phát máu</li>
+        </ol>
+
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-3 d-flex align-items-center">
+                    <button class="btn btn-outline-secondary me-2">Bộ lọc</button>
+                    <input class="form-control me-2" style="max-width:200px;" type="text" placeholder="trạng thái">
+                    <input class="form-control me-2" style="max-width:200px;" type="text" placeholder="Tìm số phiếu">
+                    <select class="form-select me-2" style="max-width:200px;">
+                        <option>Thời gian thực hiện</option>
+                        <option>Tất cả</option>
+                    </select>
+                    <select class="form-select me-2" style="max-width:200px;">
+                        <option>Trạng thái</option>
+                    </select>
+                    <select class="form-select me-2" style="max-width:200px;">
+                        <option>Tên kho</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>STT</th>
+                                <th>Số phiếu</th>
+                                <th>Họ tên người bệnh</th>
+                                <th>Ngày sinh</th>
+                                <th>Mã HS</th>
+                                <th>Mã BA</th>
+                                <th>Mã NB</th>
+                                <th>Chế phẩm máu</th>
+                                <th>Mức độ</th>
+                                <th>Tiện ích</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-table">
+                            <!-- Data rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Chatbot Icon -->
+        <div class="chatbot">
+            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712027.png" alt="Chatbot" width="60">
+        </div>
+    </div>
+
+    <!-- Popup chọn chế phẩm máu -->
+    <div class="modal fade" id="modalPhatMau" tabindex="-1" aria-labelledby="modalPhatMauLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalPhatMauLabel">Chọn chế phẩm máu muốn phát</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body" id="chePhamList">
+            <!-- List chế phẩm máu sẽ render ở đây -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="button" class="btn btn-primary" id="btnPhatMau">Phát máu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nút reset -->
+    <div style="position:fixed;bottom:100px;right:30px;z-index:1000;">
+        <button class="btn btn-danger" id="btnResetData">Reset dữ liệu TEST</button>
+    </div>
+
+    <script>
+        // Khởi tạo dữ liệu mẫu nếu chưa có
+        if (!localStorage.getItem('bloodPhieuList')) {
+            const demoData = [
+                {
+                    stt: 1,
+                    soPhieu: '999',
+                    hoTen: 'H TEST TRANG THsssAI',
+                    ngaySinh: '01/01/1997',
+                    maHS: '2311160002',
+                    maBA: '2302304',
+                    maNB: '2311000349',
+                    chePhams: [
+                        { id: 'M02', ten: 'Huyết tương tươi đông lạnh 200 ml', daPhat: false },
+                        { id: 'HC1', ten: 'Khối hồng cầu từ 250 ml máu toàn phần', daPhat: false }
+                    ],
+                    mucDo: 'Thường'
+                }
+            ];
+            localStorage.setItem('bloodPhieuList', JSON.stringify(demoData));
+        }
+
+        function renderTable() {
+            const table = document.getElementById('data-table');
+            table.innerHTML = '';
+            let demoData = JSON.parse(localStorage.getItem('bloodPhieuList')) || [];
+            demoData.forEach((row, idx) => {
+                const chePhamStr = row.chePhams.map(cp => cp.ten + (cp.daPhat ? ' (Đã phát)' : '')).join(', ');
+                const params = new URLSearchParams({
+                    soPhieu: row.soPhieu,
+                    maBA: row.maBA,
+                    hoTen: row.hoTen,
+                    ngaySinh: row.ngaySinh,
+                    maHS: row.maHS,
+                    maNB: row.maNB
+                }).toString();
+                table.innerHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td>${row.soPhieu}</td>
+                        <td>${row.hoTen}</td>
+                        <td>${row.ngaySinh}</td>
+                        <td>${row.maHS}</td>
+                        <td>${row.maBA}</td>
+                        <td>${row.maNB}</td>
+                        <td>${chePhamStr}</td>
+                        <td>${row.mucDo}</td>
+                        <td>
+                            <a href="truyen-phat-mau.html?${params}" title="Xem chi tiết">
+                                <img src="https://cdn-icons-png.flaticon.com/512/709/709612.png" alt="eye" width="28">
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', renderTable);
+
+        document.getElementById('btnResetData').onclick = function() {
+            const demoData = [
+                {
+                    stt: 1,
+                    soPhieu: '999',
+                    hoTen: 'Test phát máu',
+                    ngaySinh: '01/01/1997',
+                    maHS: '2311160002',
+                    maBA: '2302304',
+                    maNB: '2311000349',
+                    chePhams: [
+                        { id: 'M02', ten: 'Huyết tương tươi đông lạnh 200 ml', daPhat: false },
+                        { id: 'HC1', ten: 'Khối hồng cầu từ 250 ml máu toàn phần', daPhat: false }
+                    ],
+                    mucDo: 'Thường'
+                }
+            ];
+            localStorage.setItem('bloodPhieuList', JSON.stringify(demoData));
+            location.reload();
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
