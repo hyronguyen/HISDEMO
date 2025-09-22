@@ -235,17 +235,9 @@
                 return;
             }
 
-            // Lấy số phiếu gốc (ví dụ: từ 999.1 hoặc 999.2 sẽ lấy 999)
-            let soPhieuGoc = currentPhieu.soPhieuGoc || currentPhieu.soPhieu.split('.')[0];
-
-            // Tìm số phiếu mới dạng gốc.số, số tăng dần và chưa tồn tại
-            let suffix = 1;
-            let newSoPhieu;
-            while (true) {
-                newSoPhieu = soPhieuGoc + '.' + suffix;
-                if (!bloodPhieuList.some(p => p.soPhieu === newSoPhieu)) break;
-                suffix++;
-            }
+            // Tạo số phiếu mới tăng dần (không dùng .1 .2 .3)
+            let maxSoPhieu = Math.max(...bloodPhieuList.map(p => parseInt(p.soPhieu)).filter(n => !isNaN(n)), 0);
+            let newSoPhieu = (maxSoPhieu + 1).toString();
 
             const chePhamsTach = checked.map(idx => currentPhieu.chePhams[idx]);
             bloodPhieuList.push({
@@ -258,7 +250,7 @@
                 maNB: currentPhieu.maNB,
                 chePhams: chePhamsTach,
                 mucDo: currentPhieu.mucDo,
-                soPhieuGoc: soPhieuGoc
+                soPhieuGoc: currentPhieu.soPhieuGoc || currentPhieu.soPhieu
             });
 
             // Xóa các chế phẩm đã tách khỏi phiếu gốc

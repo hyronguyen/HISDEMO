@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Kho máu - Viện Huyết học TMTW</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #eaf3fa;
+            min-height: 100vh;
+        }
+        .header-bar {
+            background: #f36c6c;
+            color: #fff;
+            padding: 10px 0;
+        }
+        .main-menu-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 32px 24px;
+        }
+        .menu-btn {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 24px 0;
+            text-align: center;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+            border: none;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+        .menu-btn:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .menu-btn img {
+            width: 64px;
+            margin-bottom: 12px;
+        }
+        .menu-btn span {
+            display: block;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+        .notify-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 24px;
+            min-height: 350px;
+        }
+        .notify-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+        .notify-list {
+            margin-bottom: 24px;
+        }
+        .notify-list .dot {
+            color: #2196f3;
+            font-size: 1.2em;
+            vertical-align: middle;
+        }
+        .notify-list .small {
+            font-size: 0.95em;
+        }
+        .search-box {
+            max-width: 300px;
+        }
+        .avatar {
+            width: 32px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-bar d-flex align-items-center justify-content-between px-4">
+        <div>
+            <span class="fw-bold">Viện Huyết học - TMTW</span>
+            <span class="badge bg-success ms-2">DEMO</span>
+        </div>
+        <div class="flex-grow-1 mx-4">
+            <input class="form-control search-box" type="text" placeholder="Tìm kiếm tên màn hình">
+        </div>
+        <div>
+            <span class="me-3">Nguyễn Hồ Ngọc Huy</span>
+            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar" class="avatar">
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="main-menu-card mb-4">
+                    <div class="mb-3 fw-bold fs-4">Kho máu</div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button class="menu-btn">
+                                <img src="https://techport.vn/uploads/2024/5-8/2.png" style="filter: grayscale(50);" alt="Nhập kho máu">
+                                <span>Nhập kho máu</span>
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="menu-btn">
+                                <img src="https://techport.vn/uploads/2024/5-8/2.png" style="filter: grayscale(50);" alt="Tồn kho máu">
+                                <span>Danh sách tồn kho máu</span>
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="menu-btn" onclick="window.location.href='danh-sach.html'">
+                                <img src="https://techport.vn/uploads/2024/5-8/2.png" style="filter: grayscale(50);" alt="Truyền phát máu">
+                                <span>Truyền phát máu</span>
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="menu-btn">
+                                <img src="https://techport.vn/uploads/2024/5-8/2.png" style="filter: grayscale(50);" alt="Xuất kho máu">
+                                <span>Xuất kho máu</span>
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="menu-btn">
+                                <img src="https://techport.vn/uploads/2024/5-8/2.png" style="filter: grayscale(50);" alt="Trả máu">
+                                <span>Danh sách trả máu</span>
+                            </button>
+                        </div>
+                         <div class="col-md-6">
+                            <button class="menu-btn" onclick="window.location.href='danh-sach-du-tru.html'">
+                                <img src="https://techport.vn/uploads/2024/5-8/2.png" alt="Trả máu">
+                                <span>Danh sách dự trù máu</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="notify-card">
+                    <div class="notify-title">Thông báo</div>
+                    <div class="notify-list">
+                        <div class="fw-bold mb-1">Thông báo đã có kết quả CLS của NB</div>
+                        <div class="small text-secondary mb-1">Chưa đọc</div>
+                        <div class="small mb-1">TS2506240052 - CÂN BẰNG 3 - 17:27 24/06/2025 <span class="dot">•</span></div>
+                        <div class="small mb-1">TS2506240051 - CÂN BẰNG 2 - 17:26 24/06/2025 <span class="dot">•</span></div>
+                        <div class="small mb-3">TS2506240050 - CÂN BẰNG 1 - 17:25 24/06/2025 <span class="dot">•</span></div>
+                    </div>
+                    <div class="notify-list">
+                        <div class="fw-bold mb-1">Thông báo có phiếu trình ký</div>
+                        <div class="small text-secondary mb-1">Chưa đọc</div>
+                        <div class="small mb-3">2406250010 - CAO THỊ THÙY LINH - 11:34 23/06/2025 <span class="dot">•</span></div>
+                    </div>
+                    <div class="notify-list">
+                        <div class="fw-bold mb-1">Tin nhắn</div>
+                        <div class="small text-secondary mb-1">Danh sách dịch vụ mới tạo: DVYC_100-Tư vấn dinh dưỡng, DV4240-Xăng chuyển viện từ BV đến BV Chợ Rẫy, DV3964-Định lượng Vancomycin [Máu], ĐMM007-Đường máu</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('btnPhatMau').onclick = function() {
+    const checked = Array.from(document.querySelectorAll('#chePhamList input:checked')).map(i => parseInt(i.value));
+    const total = currentPhieu.chePhams.filter(cp => !cp.daPhat).length;
+
+    // Không cho tách nếu chỉ còn 1 chế phẩm máu
+    if (total <= 1) {
+        alert('Phiếu chỉ còn 1 chế phẩm máu, không thể tách!');
+        return;
+    }
+    // Không cho tách nếu chọn hết hoặc không chọn
+    if (checked.length === 0) {
+        alert('Vui lòng chọn ít nhất 1 chế phẩm máu để tách!');
+        return;
+    }
+    if (checked.length >= total) {
+        alert('Không thể tách toàn bộ chế phẩm máu, phải chừa lại ít nhất 1!');
+        return;
+    }
+
+    // Tạo số phiếu mới tăng dần (không dùng .1 .2 .3)
+    let maxSoPhieu = Math.max(...bloodPhieuList.map(p => parseInt(p.soPhieu)).filter(n => !isNaN(n)), 0);
+    let newSoPhieu = (maxSoPhieu + 1).toString();
+
+    const chePhamsTach = checked.map(idx => currentPhieu.chePhams[idx]);
+    bloodPhieuList.push({
+        stt: bloodPhieuList.length + 1,
+        soPhieu: newSoPhieu,
+        hoTen: currentPhieu.hoTen,
+        ngaySinh: currentPhieu.ngaySinh,
+        maHS: currentPhieu.maHS,
+        maBA: currentPhieu.maBA,
+        maNB: currentPhieu.maNB,
+        chePhams: chePhamsTach,
+        mucDo: currentPhieu.mucDo,
+        soPhieuGoc: currentPhieu.soPhieuGoc || currentPhieu.soPhieu
+    });
+
+    // Xóa các chế phẩm đã tách khỏi phiếu gốc
+    currentPhieu.chePhams = currentPhieu.chePhams.filter((cp, idx) => !checked.includes(idx));
+    localStorage.setItem('bloodPhieuList', JSON.stringify(bloodPhieuList));
+    renderChePhams();
+    bootstrap.Modal.getInstance(document.getElementById('modalPhatMau')).hide();
+
+    // Thông báo và xác nhận quay về danh sách
+    const msg = `Đã tách thành công! Các chế phẩm máu đã được chuyển sang số phiếu: ${newSoPhieu}.\n\nBạn có muốn quay về danh sách phiếu không?`;
+    if (confirm(msg)) {
+        window.location.href = "index.html";
+    }
+};
+    </script>
+</body>
+</html>
